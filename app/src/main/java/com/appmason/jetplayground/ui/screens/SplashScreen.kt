@@ -21,10 +21,10 @@ fun SplashScreen(navController: NavHostController) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
     val logoAnimationState = animateLottieCompositionAsState(
         composition = composition,
-        speed = 2f
+        speed = 4f
     )
     if (logoAnimationState.isAtEnd && logoAnimationState.isPlaying) {
-        navController.navigate(Screen.Home.route)
+        navController.navigate(Screen.OtpScreen.route)
     }
     Box(
         modifier = Modifier
