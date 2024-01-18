@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.appmason.jetplayground.otp_verifier.receiver.OTPReceiver
@@ -52,7 +54,7 @@ fun OtpScreen(navController: NavHostController) {
         color = Color.White
     ) {
         OtpTextField(
-            modifier = Modifier.padding(top = 80.dp),
+            modifier = Modifier.padding(top = 120.dp),
             otpText = otpValue,
             shouldCursorBlink = false,
             onOtpTextChange = { value, otpFilled ->
@@ -71,11 +73,13 @@ fun OTPReceiverEffect(
     context: Context,
     onOtpReceived: (String) -> Unit
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     val myOTPReceiver = remember { OTPReceiver() }
     LaunchedEffect(Unit) {
         Log.e("OTPReceiverEffect", "SMS retrieval has been started.")
         startSMSRetrieverClient(context)
 
+        Log.e("OTPReceiverEffect ", "Registering receiver")
         context.registerReceiver(
             myOTPReceiver,
             IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
@@ -88,6 +92,7 @@ fun OTPReceiverEffect(
                 otp?.let {
                     onOtpReceived(it)
                 }
+                Log.e("OTPReceiverEffect ", "Unregistering receiver")
                 context.unregisterReceiver(myOTPReceiver)
             }
 
@@ -95,5 +100,12 @@ fun OTPReceiverEffect(
                 Log.e("OTPReceiverEffect ", "Timeout")
             }
         })
+    }
+    DisposableEffect(lifecycleOwner) {
+        onDispose {
+            Log.e("OTPReceiverEffect ", "Compose no longer displayed")
+            Log.e("OTPReceiverEffect ", "Unregistering receiver")
+            context.unregisterReceiver(myOTPReceiver)
+        }
     }
 }

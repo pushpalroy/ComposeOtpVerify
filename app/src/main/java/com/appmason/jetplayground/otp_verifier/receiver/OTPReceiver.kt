@@ -58,11 +58,11 @@ class OTPReceiver : BroadcastReceiver() {
 
 fun startSMSRetrieverClient(context: Context) {
     val client: SmsRetrieverClient = SmsRetriever.getClient(context)
-    val task = client.startSmsRetriever()
-    task.addOnSuccessListener {
+    val smsRetrieverTask = client.startSmsRetriever()
+    smsRetrieverTask.addOnSuccessListener {
         Log.e("OTPReceiver", "startSMSRetrieverClient addOnSuccessListener")
     }
-    task.addOnFailureListener { e ->
+    smsRetrieverTask.addOnFailureListener { e ->
         Log.e("OTPReceiver", "startSMSRetrieverClient addOnFailureListener" + e.stackTrace)
     }
 }

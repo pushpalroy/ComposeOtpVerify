@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -56,7 +57,8 @@ fun OtpTextField(
             }
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.NumberPassword
+            keyboardType = KeyboardType.NumberPassword,
+            imeAction = ImeAction.Done
         ),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
@@ -101,7 +103,7 @@ private fun CharView(
     Box(contentAlignment = Alignment.Center) {
         Text(
             modifier = Modifier
-                .width(40.dp)
+                .width(36.dp)
                 .border(
                     when {
                         isFocused -> 2.dp
