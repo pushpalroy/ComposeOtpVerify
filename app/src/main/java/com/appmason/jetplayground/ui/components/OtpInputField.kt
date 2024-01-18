@@ -21,39 +21,58 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.appmason.jetplayground.ui.theme.GreyDark
-import com.appmason.jetplayground.ui.theme.GreyLight
+import com.appmason.jetplayground.ui.theme.BorderDark
+import com.appmason.jetplayground.ui.theme.BorderLight
 import kotlinx.coroutines.delay
 
+/**
+ * A composable function for creating an OTP input field.
+ *
+ * This OTP input field allows for the entry of a One Time Password (OTP) with a configurable number of characters.
+ * It supports automatic population of OTP from different sources (e.g., server).
+ *
+ * @param modifier Modifier for styling and layout of the input field.
+ * @param otpText The current text of the OTP input field.
+ * @param otpLength The length of the OTP. Default is 6 characters.
+ * @param shouldShowCursor Boolean flag to indicate if the cursor should be shown.
+ * @param shouldCursorBlink Boolean flag to indicate if the cursor should blink.
+ * @param onOtpTextChange Lambda function that is triggered when the OTP text changes.
+ *        It provides the updated text and a flag indicating if the OTP is complete.
+ * @throws IllegalArgumentException if the initial otpText length is greater than otpLength.
+ *
+ * Usage example:
+ * OtpInputField(
+ *     otpText = viewModel.otpText,
+ *     otpLength = 6,
+ *     onOtpTextChange = { otp, isComplete -> /* handle OTP change */ }
+ * )
+ */
 @Composable
-fun OtpTextField(
+fun OtpInputField(
     modifier: Modifier = Modifier,
     otpText: String,
-    otpCount: Int = 6,
+    otpLength: Int = 6,
+    shouldShowCursor: Boolean = false,
     shouldCursorBlink: Boolean = false,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
-    val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-        if (otpText.length > otpCount) {
-            throw IllegalArgumentException("OTP should be $otpCount digits")
+        if (otpText.length > otpLength) {
+            throw IllegalArgumentException("OTP should be $otpLength digits")
         }
     }
     BasicTextField(
-        modifier = modifier.focusRequester(focusRequester),
+        modifier = modifier,
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
         onValueChange = {
-            if (it.text.length <= otpCount) {
-                onOtpTextChange.invoke(it.text, it.text.length == otpCount)
+            if (it.text.length <= otpLength) {
+                onOtpTextChange.invoke(it.text, it.text.length == otpLength)
             }
         },
         keyboardOptions = KeyboardOptions(
@@ -62,11 +81,12 @@ fun OtpTextField(
         ),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
-                repeat(otpCount) { index ->
-                    CharView(
+                repeat(otpLength) { index ->
+                    CharacterContainer(
                         index = index,
                         text = otpText,
-                        shouldCursorBlink = shouldCursorBlink
+                        shouldShowCursor = shouldShowCursor,
+                        shouldCursorBlink = shouldCursorBlink,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -75,24 +95,37 @@ fun OtpTextField(
     )
 }
 
+/**
+ * An internal composable function used within [OtpInputField] to render individual character containers.
+ *
+ * Each character container displays a single character of the OTP and manages cursor visibility and blinking.
+ *
+ * @param index The position of this character in the OTP.
+ * @param text The current text of the OTP input field.
+ * @param shouldShowCursor Boolean flag to indicate if the cursor should be shown for this container.
+ * @param shouldCursorBlink Boolean flag to indicate if the cursor should blink when shown.
+ *
+ * Note: This function cannot be used outside the context of [OtpInputField] as it is tailored to its specific use-case.
+ */
 @Composable
-private fun CharView(
+internal fun CharacterContainer(
     index: Int,
     text: String,
+    shouldShowCursor: Boolean,
     shouldCursorBlink: Boolean,
 ) {
     val isFocused = text.length == index
-    val char = when {
+    val character = when {
         index < text.length -> text[index].toString()
         else -> ""
     }
 
     // Cursor visibility state
-    val cursorVisible = remember { mutableStateOf(true) }
+    val cursorVisible = remember { mutableStateOf(shouldShowCursor) }
 
     // Blinking effect for the cursor
     LaunchedEffect(key1 = isFocused) {
-        if (isFocused && shouldCursorBlink) {
+        if (isFocused && shouldShowCursor && shouldCursorBlink) {
             while (true) {
                 delay(800) // Adjust the blinking speed here
                 cursorVisible.value = !cursorVisible.value
@@ -105,18 +138,20 @@ private fun CharView(
             modifier = Modifier
                 .width(36.dp)
                 .border(
-                    when {
+                    width = when {
                         isFocused -> 2.dp
                         else -> 1.dp
-                    }, when {
-                        isFocused -> GreyDark
-                        else -> GreyLight
-                    }, RoundedCornerShape(8.dp)
+                    },
+                    color = when {
+                        isFocused -> BorderDark
+                        else -> BorderLight
+                    },
+                    shape = RoundedCornerShape(6.dp)
                 )
                 .padding(2.dp),
-            text = char,
+            text = character,
             style = MaterialTheme.typography.headlineLarge,
-            color = if (isFocused) GreyLight else GreyDark,
+            color = if (isFocused) BorderLight else BorderDark,
             textAlign = TextAlign.Center
         )
 
@@ -127,7 +162,7 @@ private fun CharView(
                     .align(Alignment.Center)
                     .width(2.dp)
                     .height(24.dp) // Adjust height according to your design
-                    .background(GreyDark)
+                    .background(BorderDark)
             )
         }
     }

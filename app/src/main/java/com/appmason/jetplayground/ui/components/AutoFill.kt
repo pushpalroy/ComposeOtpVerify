@@ -50,7 +50,12 @@ fun Autofill(
 
 /**
  * Provides autofill to a view.
+ *
  * This should be removed once compose completely supports autofill nicely.
+ * Google is working to add support:
+ * https://issuetracker.google.com/issues/268596603
+ * https://issuetracker.google.com/issues/265911809
+ * https://issuetracker.google.com/issues/176949051
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun Modifier.autofill(

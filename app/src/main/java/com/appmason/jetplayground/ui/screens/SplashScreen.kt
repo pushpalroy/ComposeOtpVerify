@@ -21,7 +21,7 @@ fun SplashScreen(navController: NavHostController) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
     val logoAnimationState = animateLottieCompositionAsState(
         composition = composition,
-        speed = 4f
+        speed = 2f
     )
     if (logoAnimationState.isAtEnd && logoAnimationState.isPlaying) {
         navController.navigate(Screen.OtpScreen.route)
