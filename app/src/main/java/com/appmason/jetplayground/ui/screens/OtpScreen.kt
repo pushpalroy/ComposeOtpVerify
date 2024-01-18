@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.appmason.jetplayground.otp_verifier.receiver.OTPReceiver
 import com.appmason.jetplayground.otp_verifier.receiver.startSMSRetrieverClient
@@ -79,21 +81,16 @@ fun OTPReceiverEffect(
         Log.e("OTPReceiverEffect", "SMS retrieval has been started.")
         startSMSRetrieverClient(context)
 
-        Log.e("OTPReceiverEffect ", "Registering receiver")
-        context.registerReceiver(
-            myOTPReceiver,
-            IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
-            Context.RECEIVER_EXPORTED
-        )
-
         myOTPReceiver.init(object : OTPReceiver.OTPReceiveListener {
             override fun onOTPReceived(otp: String?) {
                 Log.e("OTPReceiverEffect ", "OTP Received: $otp")
-                otp?.let {
-                    onOtpReceived(it)
+                otp?.let { onOtpReceived(it) }
+                try {
+                    Log.e("OTPReceiverEffect ", "Unregistering receiver")
+                    context.unregisterReceiver(myOTPReceiver)
+                } catch (e: IllegalArgumentException) {
+                    Log.e("OTPReceiverEffect ", "Error in registering receiver: ${e.message}}")
                 }
-                Log.e("OTPReceiverEffect ", "Unregistering receiver")
-                context.unregisterReceiver(myOTPReceiver)
             }
 
             override fun onOTPTimeOut() {
@@ -102,10 +99,34 @@ fun OTPReceiverEffect(
         })
     }
     DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                try {
+                    Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_RESUME")
+                    Log.e("OTPReceiverEffect ", "Registering receiver")
+                    context.registerReceiver(
+                        myOTPReceiver,
+                        IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+                        Context.RECEIVER_EXPORTED
+                    )
+                } catch (e: IllegalArgumentException) {
+                    Log.e("OTPReceiverEffect ", "Error in registering receiver: ${e.message}}")
+                }
+            }
+            if (event == Lifecycle.Event.ON_STOP) {
+                try {
+                    Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_STOP")
+                    Log.e("OTPReceiverEffect ", "Unregistering receiver")
+                    context.unregisterReceiver(myOTPReceiver)
+                } catch (e: IllegalArgumentException) {
+                    Log.e("OTPReceiverEffect ", "Error in unregistering receiver: ${e.message}}")
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             Log.e("OTPReceiverEffect ", "Compose no longer displayed")
-            Log.e("OTPReceiverEffect ", "Unregistering receiver")
-            context.unregisterReceiver(myOTPReceiver)
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
