@@ -16,6 +16,13 @@ import androidx.compose.ui.platform.LocalAutofillTree
 /**
  * Referred from:
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/ExplicitAutofillTypesDemo.kt
+ *
+ * We do not have a proper support for Autofill in Compose right now.
+ *
+ * Google is working to add support:
+ * https://issuetracker.google.com/issues/268596603
+ * https://issuetracker.google.com/issues/265911809
+ * https://issuetracker.google.com/issues/176949051
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

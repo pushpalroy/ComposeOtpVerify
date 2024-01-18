@@ -32,15 +32,18 @@ fun OtpScreen(navController: NavHostController) {
     val context = LocalContext.current
     var otpValue by remember { mutableStateOf("") }
 
+    /**
+     * Right now we don't have support for Autofill in Compose.
+     * See [com.appmason.jetplayground.ui.components.Autofill]
+     * If we have support from future and want user to autofill OTP from keyboard manually,
+     * we do not need to fetch OTP automatically using Google SMS Retriever API and in
+     * that case, we can totally remove this [OTPReceiverEffect] and let Autofill handle it.
+     */
     OTPReceiverEffect(
         context = context,
-        onOtpReceived = {
-            // Do nothing as the AutoFill will take care of the OTP and suggest
-            // user to fill it from the IME. Else, if this behaviour is not needed
-            // and we want to just go ahead and autofill ourselves, we can do:
-            // otpValue = otp
-        }
+        onOtpReceived = { otp -> otpValue = otp }
     )
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -52,9 +55,6 @@ fun OtpScreen(navController: NavHostController) {
             modifier = Modifier.padding(top = 80.dp),
             otpText = otpValue,
             shouldCursorBlink = false,
-            onOtpAutoFilled = { autoFilledOtp ->
-                otpValue = autoFilledOtp
-            },
             onOtpTextChange = { value, otpFilled ->
                 otpValue = value
                 if (otpFilled) {
@@ -71,10 +71,10 @@ fun OTPReceiverEffect(
     context: Context,
     onOtpReceived: (String) -> Unit
 ) {
+    val myOTPReceiver = remember { OTPReceiver() }
     LaunchedEffect(Unit) {
         Log.e("OTPReceiverEffect", "SMS retrieval has been started.")
         startSMSRetrieverClient(context)
-        val myOTPReceiver = OTPReceiver()
 
         context.registerReceiver(
             myOTPReceiver,
@@ -84,7 +84,7 @@ fun OTPReceiverEffect(
 
         myOTPReceiver.init(object : OTPReceiver.OTPReceiveListener {
             override fun onOTPReceived(otp: String?) {
-                Log.e("OTPReceiverEffect ", "OTP Received  $otp")
+                Log.e("OTPReceiverEffect ", "OTP Received: $otp")
                 otp?.let {
                     onOtpReceived(it)
                 }
