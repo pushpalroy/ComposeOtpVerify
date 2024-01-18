@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.appmason.jetplayground.ui.theme.GreyDark
 import com.appmason.jetplayground.ui.theme.GreyLight
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -56,7 +57,7 @@ fun OtpTextField(
         modifier = modifier
             .focusRequester(focusRequester)
             .autofill(
-                autofillTypes = listOf(AutofillType.SmsOtpCode),
+                autofillTypes = persistentListOf(AutofillType.SmsOtpCode),
                 onFill = { onOtpAutoFilled(it) }
             ),
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
@@ -66,8 +67,7 @@ fun OtpTextField(
             }
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.NumberPassword,
-            imeAction = ImeAction.Default
+            keyboardType = KeyboardType.NumberPassword
         ),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {

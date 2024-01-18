@@ -61,6 +61,8 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("com.airbnb.android:lottie-compose:6.3.0")
     implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+
     //SMSRetrieval API Dependencies for Auto OTP Verification
     implementation("com.google.android.gms:play-services-auth-api-phone:18.0.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
