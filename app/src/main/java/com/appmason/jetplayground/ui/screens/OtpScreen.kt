@@ -34,7 +34,12 @@ fun OtpScreen(navController: NavHostController) {
 
     OTPReceiverEffect(
         context = context,
-        onOtpChange = { otpValue = it }
+        onOtpReceived = {
+            // Do nothing as the AutoFill will take care of the OTP and suggest
+            // user to fill it from the IME. Else, if this behaviour is not needed
+            // and we want to just go ahead and autofill ourselves, we can do:
+            // otpValue = otp
+        }
     )
     Surface(
         modifier = Modifier
@@ -47,6 +52,9 @@ fun OtpScreen(navController: NavHostController) {
             modifier = Modifier.padding(top = 80.dp),
             otpText = otpValue,
             shouldCursorBlink = false,
+            onOtpAutoFilled = { autoFilledOtp ->
+                otpValue = autoFilledOtp
+            },
             onOtpTextChange = { value, otpFilled ->
                 otpValue = value
                 if (otpFilled) {
@@ -61,7 +69,7 @@ fun OtpScreen(navController: NavHostController) {
 @Composable
 fun OTPReceiverEffect(
     context: Context,
-    onOtpChange: (String) -> Unit
+    onOtpReceived: (String) -> Unit
 ) {
     LaunchedEffect(Unit) {
         Log.e("OTPReceiverEffect", "SMS retrieval has been started.")
@@ -78,7 +86,7 @@ fun OTPReceiverEffect(
             override fun onOTPReceived(otp: String?) {
                 Log.e("OTPReceiverEffect ", "OTP Received  $otp")
                 otp?.let {
-                    onOtpChange(it)
+                    onOtpReceived(it)
                 }
                 context.unregisterReceiver(myOTPReceiver)
             }

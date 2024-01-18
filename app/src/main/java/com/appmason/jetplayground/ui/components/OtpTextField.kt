@@ -20,10 +20,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -32,30 +35,40 @@ import com.appmason.jetplayground.ui.theme.GreyDark
 import com.appmason.jetplayground.ui.theme.GreyLight
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
     otpCount: Int = 6,
     shouldCursorBlink: Boolean = false,
+    onOtpAutoFilled: (String) -> Unit,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
         if (otpText.length > otpCount) {
-            throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")
+            throw IllegalArgumentException("OTP should be $otpCount digits")
         }
     }
-
     BasicTextField(
-        modifier = modifier,
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .autofill(
+                autofillTypes = listOf(AutofillType.SmsOtpCode),
+                onFill = { onOtpAutoFilled(it) }
+            ),
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
         onValueChange = {
             if (it.text.length <= otpCount) {
                 onOtpTextChange.invoke(it.text, it.text.length == otpCount)
             }
         },
-        cursorBrush = SolidColor(Color.Black),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.NumberPassword,
+            imeAction = ImeAction.Default
+        ),
         decorationBox = {
             Row(horizontalArrangement = Arrangement.Center) {
                 repeat(otpCount) { index ->
@@ -101,7 +114,10 @@ private fun CharView(
             modifier = Modifier
                 .width(40.dp)
                 .border(
-                    1.dp, when {
+                    when {
+                        isFocused -> 2.dp
+                        else -> 1.dp
+                    }, when {
                         isFocused -> GreyDark
                         else -> GreyLight
                     }, RoundedCornerShape(8.dp)
