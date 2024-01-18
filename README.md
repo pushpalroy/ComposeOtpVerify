@@ -1,10 +1,10 @@
 ## OTP Verification with Jetpack Compose
 
-This repository contains a custom-built OTP (One Time Password) Input Field and integration with Google's SMS Retriever API 
-for OTP fetch and populate functionality, developed using Jetpack Compose. This component is designed to cater to the needs 
+This repository contains a custom-built OTP (One Time Password) Input Field and integration with Google's SMS Retriever API
+for OTP fetch and populate functionality, developed using Jetpack Compose. This component is designed to cater to the needs
 of modern Android applications requiring OTP verification, offering a blend of customization and ease-of-use.
 
-![Compose](https://img.shields.io/badge/Compose-BOM-2023.10.01-blue.svg?color=blue&style=for-the-badge)
+![Compose](https://img.shields.io/badge/Compose_BOM-1.5.4-blue.svg?color=blue&style=for-the-badge)
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg?color=blue&style=for-the-badge)
 
 > This is not a library. This is a demo project to experiment and try out a functionality.
@@ -13,12 +13,12 @@ of modern Android applications requiring OTP verification, offering a blend of c
 
 <table style="width:100%">
   <tr>
-    <th>OTP Screen UI</th>
     <th>OTP Verification</th>
+    <th>OTP Screen UI</th>
   </tr>
   <tr>
-    <td><img src = "art/screens/otp_ui.png" width="800" alt="OTP Screen UI"/></td> 
-    <td><img src = "art/screens/otp_verification.gif" width="800" alt="OTP Verification"/></td>
+    <td><img src = "art/screens/otp_verification.gif" width="100%" alt="OTP Verification"/></td>
+    <td><img src = "art/screens/otp_ui.png" width="820" alt="OTP Screen UI"/></td>
   </tr>
 </table>
 
