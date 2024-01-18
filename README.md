@@ -1,8 +1,7 @@
 ## OTP Verification with Jetpack Compose
 
 This repository contains a custom-built OTP (One Time Password) Input Field and integration with [Google's SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview)
-for OTP fetch and populate functionality, developed using Jetpack Compose. This component is designed to cater to the needs
-of modern Android applications requiring OTP verification, offering a blend of customization and ease-of-use.
+for OTP fetch and populate functionality, developed using Jetpack Compose. This component is designed to cater to modern Android applications requiring OTP verification, offering a blend of customization and ease of use.
 
 ![Compose](https://img.shields.io/badge/Compose_BOM-1.5.4-blue.svg?color=blue&style=for-the-badge)
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg?color=blue&style=for-the-badge)
@@ -28,18 +27,18 @@ of modern Android applications requiring OTP verification, offering a blend of c
 - Supports automatic filling of the OTP, a convenient feature for OTPs received from servers or other sources.
 - Offers options to show a cursor, and control its blinking, enhancing the user experience.
 
-### Note on AutoFill
+### Note on Compose AutoFill
 
-> Right now Jetpack Compose does not have a good support for [Autofill](https://developer.android.com/guide/topics/text/autofill). 
-> There has been some temporary solutions like [ExplicitAutofillTypesDemo.kt](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/ExplicitAutofillTypesDemo.kt).
-> Google is working to add support and we may have it in future. Autofill will benefit to fill fields from IME directly.
-> 
-> Issues for this feature: 
-> https://issuetracker.google.com/issues/268596603
-> https://issuetracker.google.com/issues/265911809
-> https://issuetracker.google.com/issues/176949051
+> Right now Jetpack Compose does not have good support for [Autofill](https://developer.android.com/guide/topics/text/autofill).
+> There have been some temporary solutions like [ExplicitAutofillTypesDemo.kt](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/ExplicitAutofillTypesDemo.kt).
+> Google is working to add support and we may have it in the future. Autofill will benefit from filling fields like name, emails, credit card numbers, and OTPs from IME directly.
+>
+> Open issues related to Compose Autofill:
+> - https://issuetracker.google.com/issues/268596603
+> - https://issuetracker.google.com/issues/265911809
+> - https://issuetracker.google.com/issues/176949051
 
-I did some experiment with the temporary solution and looks like this.
+I did some experiments with the temporary solution and looks like this.
 But it does not work smoothly and has many issues:
 
 <table style="width:100%">
@@ -47,12 +46,12 @@ But it does not work smoothly and has many issues:
     <th>Compose Autofill</th>
   </tr>
   <tr>
-    <td><img src = "art/screens/otp_autofill.png" width="50%" alt="OTP Autofill"/></td>
+    <td><img src = "art/screens/otp_autofill.png" width="320" alt="OTP Autofill"/></td>
   </tr>
 </table>
 
 
-### Find this project useful ? ❤️
+### Find this project useful?
 
 - Support it by clicking the ⭐️ button on the upper right of this page. ✌️
 
