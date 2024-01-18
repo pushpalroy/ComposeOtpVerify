@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,15 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.appmason.jetplayground.otp_verifier.receiver.OTPReceiver
 import com.appmason.jetplayground.otp_verifier.receiver.startSMSRetrieverClient
 import com.appmason.jetplayground.ui.components.OtpTextField
 import com.google.android.gms.auth.api.phone.SmsRetriever
+import androidx.lifecycle.compose.LifecycleResumeEffect
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -75,19 +71,28 @@ fun OTPReceiverEffect(
     context: Context,
     onOtpReceived: (String) -> Unit
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val myOTPReceiver = remember { OTPReceiver() }
-    LaunchedEffect(Unit) {
+    val otpReceiver = remember { OTPReceiver() }
+
+    /**
+     * This function should not be used to listen for Lifecycle.Event.ON_DESTROY because Compose
+     * stops recomposing after receiving a Lifecycle.Event.ON_STOP and will never be aware of an
+     * ON_DESTROY to launch onEvent.
+     *
+     * This function should also not be used to launch tasks in response to callback events by way
+     * of storing callback data as a Lifecycle.State in a MutableState. Instead, see currentStateAsState
+     * to obtain a State that may be used to launch jobs in response to state changes.
+     */
+    LifecycleResumeEffect {
+        // add ON_RESUME effect here
         Log.e("OTPReceiverEffect", "SMS retrieval has been started.")
         startSMSRetrieverClient(context)
-
-        myOTPReceiver.init(object : OTPReceiver.OTPReceiveListener {
+        otpReceiver.init(object : OTPReceiver.OTPReceiveListener {
             override fun onOTPReceived(otp: String?) {
                 Log.e("OTPReceiverEffect ", "OTP Received: $otp")
                 otp?.let { onOtpReceived(it) }
                 try {
                     Log.e("OTPReceiverEffect ", "Unregistering receiver")
-                    context.unregisterReceiver(myOTPReceiver)
+                    context.unregisterReceiver(otpReceiver)
                 } catch (e: IllegalArgumentException) {
                     Log.e("OTPReceiverEffect ", "Error in registering receiver: ${e.message}}")
                 }
@@ -97,36 +102,26 @@ fun OTPReceiverEffect(
                 Log.e("OTPReceiverEffect ", "Timeout")
             }
         })
-    }
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                try {
-                    Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_RESUME")
-                    Log.e("OTPReceiverEffect ", "Registering receiver")
-                    context.registerReceiver(
-                        myOTPReceiver,
-                        IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
-                        Context.RECEIVER_EXPORTED
-                    )
-                } catch (e: IllegalArgumentException) {
-                    Log.e("OTPReceiverEffect ", "Error in registering receiver: ${e.message}}")
-                }
-            }
-            if (event == Lifecycle.Event.ON_STOP) {
-                try {
-                    Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_STOP")
-                    Log.e("OTPReceiverEffect ", "Unregistering receiver")
-                    context.unregisterReceiver(myOTPReceiver)
-                } catch (e: IllegalArgumentException) {
-                    Log.e("OTPReceiverEffect ", "Error in unregistering receiver: ${e.message}}")
-                }
-            }
+        try {
+            Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_RESUME")
+            Log.e("OTPReceiverEffect ", "Registering receiver")
+            context.registerReceiver(
+                otpReceiver,
+                IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+                Context.RECEIVER_EXPORTED
+            )
+        } catch (e: IllegalArgumentException) {
+            Log.e("OTPReceiverEffect ", "Error in registering receiver: ${e.message}}")
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            Log.e("OTPReceiverEffect ", "Compose no longer displayed")
-            lifecycleOwner.lifecycle.removeObserver(observer)
+        onPauseOrDispose {
+            // add clean up for work kicked off in the ON_RESUME effect here
+            try {
+                Log.e("OTPReceiverEffect ", "Lifecycle.Event.ON_PAUSE")
+                Log.e("OTPReceiverEffect ", "Unregistering receiver")
+                context.unregisterReceiver(otpReceiver)
+            } catch (e: IllegalArgumentException) {
+                Log.e("OTPReceiverEffect ", "Error in unregistering receiver: ${e.message}}")
+            }
         }
     }
 }
