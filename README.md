@@ -1,6 +1,6 @@
 ## OTP Verification with Jetpack Compose
 
-This repository contains a custom-built OTP (One Time Password) Input Field and integration with Google's SMS Retriever API
+This repository contains a custom-built OTP (One Time Password) Input Field and integration with [Google's SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview)
 for OTP fetch and populate functionality, developed using Jetpack Compose. This component is designed to cater to the needs
 of modern Android applications requiring OTP verification, offering a blend of customization and ease-of-use.
 
@@ -23,10 +23,34 @@ of modern Android applications requiring OTP verification, offering a blend of c
 </table>
 
 ### Features
-- Integration with Google's SMS Retriever API: Automatically verify OTP using SMS Retriever API and populate in UI.
-- Configurable Length: The OTP input field can be set up for any length of OTP, making it versatile for different verification scenarios.
-- Automatic Population: It supports automatic filling of the OTP, a convenient feature for OTPs received from servers or other sources.
-- Cursor Visibility and Blinking: The field offers options to show a cursor, and control its blinking, enhancing the user experience.
+- Integration with [Google's SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview) to auto verify OTP and populate.
+- OTP input field can be set up for any length of OTP.
+- Supports automatic filling of the OTP, a convenient feature for OTPs received from servers or other sources.
+- Offers options to show a cursor, and control its blinking, enhancing the user experience.
+
+### Note on AutoFill
+
+> Right now Jetpack Compose does not have a good support for [Autofill](https://developer.android.com/guide/topics/text/autofill). 
+> There has been some temporary solutions like [ExplicitAutofillTypesDemo.kt](https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/ui/ui/integration-tests/ui-demos/src/main/java/androidx/compose/ui/demos/autofill/ExplicitAutofillTypesDemo.kt).
+> Google is working to add support and we may have it in future. Autofill will benefit to fill fields from IME directly.
+> 
+> Issues for this feature: 
+> https://issuetracker.google.com/issues/268596603
+> https://issuetracker.google.com/issues/265911809
+> https://issuetracker.google.com/issues/176949051
+
+I did some experiment with the temporary solution and looks like this.
+But it does not work smoothly and has many issues:
+
+<table style="width:100%">
+  <tr>
+    <th>Compose Autofill</th>
+  </tr>
+  <tr>
+    <td><img src = "art/screens/otp_autofill.png" width="50%" alt="OTP Autofill"/></td>
+  </tr>
+</table>
+
 
 ### Find this project useful ? ❤️
 
