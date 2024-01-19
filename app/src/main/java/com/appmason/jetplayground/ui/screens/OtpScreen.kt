@@ -176,7 +176,7 @@ fun OtpScreen(navController: NavHostController) {
                             .focusRequester(focusRequester),
                         otpText = otpValue,
                         shouldCursorBlink = false,
-                        onOtpTextChange = { value, otpFilled ->
+                        onOtpModified = { value, otpFilled ->
                             otpValue = value
                             isOtpFilled = otpFilled
                             if (otpFilled) {

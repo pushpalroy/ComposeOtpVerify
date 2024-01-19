@@ -50,6 +50,13 @@ But it does not work smoothly and has many issues:
   </tr>
 </table>
 
+### Reference
+
+Thanks to these resources which helped me to learn the concepts:
+- https://proandroiddev.com/jetpack-compose-otp-input-field-bcfa22c85e5f
+- https://medium.com/@aayan.talukdar/android-automatic-otp-retrieval-in-android-and-jetpackcompose-17be181909a5
+- https://bryanherbst.com/2021/04/13/compose-autofill/
+
 
 ### Find this project useful?
 

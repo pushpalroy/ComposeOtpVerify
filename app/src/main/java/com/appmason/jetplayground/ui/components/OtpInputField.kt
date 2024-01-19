@@ -42,7 +42,7 @@ import kotlinx.coroutines.delay
  * @param otpLength The length of the OTP. Default is 6 characters.
  * @param shouldShowCursor Boolean flag to indicate if the cursor should be shown.
  * @param shouldCursorBlink Boolean flag to indicate if the cursor should blink.
- * @param onOtpTextChange Lambda function that is triggered when the OTP text changes.
+ * @param onOtpModified Lambda function that is triggered when the OTP text changes.
  *        It provides the updated text and a flag indicating if the OTP is complete.
  * @throws IllegalArgumentException if the initial otpText length is greater than otpLength.
  *
@@ -60,7 +60,7 @@ fun OtpInputField(
     otpLength: Int = 6,
     shouldShowCursor: Boolean = false,
     shouldCursorBlink: Boolean = false,
-    onOtpTextChange: (String, Boolean) -> Unit
+    onOtpModified: (String, Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
         if (otpText.length > otpLength) {
@@ -72,7 +72,7 @@ fun OtpInputField(
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
         onValueChange = {
             if (it.text.length <= otpLength) {
-                onOtpTextChange.invoke(it.text, it.text.length == otpLength)
+                onOtpModified.invoke(it.text, it.text.length == otpLength)
             }
         },
         keyboardOptions = KeyboardOptions(
