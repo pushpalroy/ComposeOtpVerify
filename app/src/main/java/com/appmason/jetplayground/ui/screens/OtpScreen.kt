@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavHostController
-import com.appmason.jetplayground.R
+import com.appmason.composeotpverify.R
 import com.appmason.jetplayground.otp_verifier.receiver.OTPReceiver
 import com.appmason.jetplayground.otp_verifier.receiver.startSMSRetrieverClient
 import com.appmason.jetplayground.ui.components.OtpInputField

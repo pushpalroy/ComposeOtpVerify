@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.appmason.jetplayground"
+    namespace = "com.appmason.composeotpverify"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.appmason.jetplayground"
+        applicationId = "com.appmason.composeotpverify"
         minSdk = 28
         targetSdk = 34
         versionCode = 1

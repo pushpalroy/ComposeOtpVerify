@@ -12,7 +12,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.appmason.jetplayground.R
+import com.appmason.composeotpverify.R
 import com.appmason.jetplayground.ui.navigation.Screen
 
 

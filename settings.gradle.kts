@@ -13,6 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "JetPlayground"
+rootProject.name = "ComposeOtpVerify"
 include(":app")
- 
