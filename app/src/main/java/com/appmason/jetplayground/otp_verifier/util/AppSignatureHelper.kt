@@ -13,7 +13,13 @@ import android.content.pm.Signature;
 import android.util.Base64;
 
 /**
+ * DO NOT USE THIS IN PRODUCTION
+ *
+ * This class is only for development purpose. For production app, use keytool to generate the hash:
+ * https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string
+ *
  * This is a helper class to generate your message hash to be included in your SMS message.
+ * Once the hash has been generated this class can be deleted.
  *
  * Without the correct hash, your app won't receive the message callback. This only needs to be
  * generated once per app and stored. Then you can remove this helper class from your code.
